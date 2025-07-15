@@ -212,8 +212,14 @@ SHIFT = 3.0
 # Naturally, adjust to the width/height of the model you have
 WIDTH = 1024
 HEIGHT = 1024
+
 # Pick your prompt
-PROMPT = "a photo of a cat"
+import json
+with open("prompt.json","r") as f:
+    j = json.load(f)
+    PROMPT = j["prompt"]
+    IMG_SAVEDIR = j["img_savedir"]
+
 # Most models prefer the range of 4-5, but still work well around 7
 CFG_SCALE = 4.5
 # Different models want different step counts but most will be good at 50, albeit that's slow to run
@@ -449,7 +455,7 @@ class SD3Inferencer:
         sampler=SAMPLER,
         seed=SEED,
         seed_type=SEEDTYPE,
-        out_dir=OUTDIR,
+        img_savedir=IMG_SAVEDIR,
         controlnet_cond_image=CONTROLNET_COND_IMAGE,
         init_image=INIT_IMAGE,
         denoise=DENOISE,
@@ -493,7 +499,7 @@ class SD3Inferencer:
                 skip_layer_config,
             )
             image = self.vae_decode(sampled_latent)
-            save_path = os.path.join(out_dir, f"{i:06d}.png")
+            save_path = img_savedir
             self.print(f"Saving to to {save_path}")
             image.save(save_path)
             self.print("Done")
@@ -551,8 +557,9 @@ CONFIGS = {
 def main(
     prompt=PROMPT,
     model=MODEL,
-    out_dir=OUTDIR,
-    postfix=None,
+    # out_dir=OUTDIR,
+    # postfix=None,
+    img_savedir=IMG_SAVEDIR,
     seed=SEED,
     seed_type=SEEDTYPE,
     sampler=None,
@@ -616,22 +623,22 @@ def main(
         else:
             prompts = [prompt]
 
-    sanitized_prompt = re.sub(r"[^\w\-\.]", "_", prompt)
-    out_dir = os.path.join(
-        out_dir,
-        (
-            os.path.splitext(os.path.basename(model))[0]
-            + (
-                "_" + os.path.splitext(os.path.basename(controlnet_ckpt))[0]
-                if controlnet_ckpt is not None
-                else ""
-            )
-        ),
-        os.path.splitext(os.path.basename(sanitized_prompt))[0][:50]
-        + (postfix or datetime.datetime.now().strftime("_%Y-%m-%dT%H-%M-%S")),
-    )
+    # sanitized_prompt = re.sub(r"[^\w\-\.]", "_", prompt)
+    # out_dir = os.path.join(
+    #     out_dir,
+    #     (
+    #         os.path.splitext(os.path.basename(model))[0]
+    #         + (
+    #             "_" + os.path.splitext(os.path.basename(controlnet_ckpt))[0]
+    #             if controlnet_ckpt is not None
+    #             else ""
+    #         )
+    #     ),
+    #     os.path.splitext(os.path.basename(sanitized_prompt))[0][:50]
+    #     + (postfix or datetime.datetime.now().strftime("_%Y-%m-%dT%H-%M-%S")),
+    # )
 
-    os.makedirs(out_dir, exist_ok=False)
+    # os.makedirs(out_dir, exist_ok=False)
 
     inferencer.gen_image(
         prompts,
@@ -642,13 +649,13 @@ def main(
         _sampler,
         seed,
         seed_type,
-        out_dir,
+        img_savedir,
         controlnet_cond_image,
         init_image,
         denoise,
         skip_layer_config,
     )
-    return out_dir
+    return img_savedir
 
 
 if __name__ == "__main__":
