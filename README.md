@@ -2,10 +2,6 @@
 
 This repository is forked from [Stable Diffusion 3.5](https://github.com/Stability-AI/sd3.5).
 
-Inference-only tiny reference implementation of SD3.5 and SD3 - everything you need for simple inference using SD3.5/SD3, as well as the SD3.5 Large ControlNets, excluding the weights files.
-
-Contains code for the text encoders (OpenAI CLIP-L/14, OpenCLIP bigG, Google T5-XXL) (these models are all public), the VAE Decoder (similar to previous SD models, but 16-channels and no postquantconv step), and the core MM-DiT (entirely new).
-
 ## Download
 
 Download the following models from HuggingFace into `models` directory:
@@ -13,9 +9,6 @@ Download the following models from HuggingFace into `models` directory:
 2. [OpenAI CLIP-L](https://huggingface.co/stabilityai/stable-diffusion-3.5-large/blob/main/text_encoders/clip_l.safetensors)
 3. [OpenCLIP bigG](https://huggingface.co/stabilityai/stable-diffusion-3.5-large/blob/main/text_encoders/clip_g.safetensors)
 4. [Google T5-XXL](https://huggingface.co/stabilityai/stable-diffusion-3.5-large/blob/main/text_encoders/t5xxl_fp16.safetensors)
-
-This code also works for [Stability AI SD3 Medium](https://huggingface.co/stabilityai/stable-diffusion-3-medium/blob/main/sd3_medium.safetensors).
-
 
 ## Install
 
@@ -29,7 +22,7 @@ python3 -s -m pip install -r requirements.txt
 
 ## Config 
 
-Modify the prompt and save dir in `prompt.json`:
+Modify the `prompt` and `img_savedir` in `prompt.json`:
 ```
 {
     "prompt": "An entire 120cm * 60cm * 75cm desk fully visible on the ground, with a laptop, notebook, pen, and coffee mug on top of it. The entire desk, including the bottom and the objects on it, should be visible in the frame. The background is clean with nothing else nearby.",
